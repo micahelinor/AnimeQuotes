@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.sql.SQLOutput;
+import java.util.Scanner;
+
 
 @SpringBootApplication
 @RestController
@@ -19,16 +22,24 @@ public class AnimeQuotesApplication<quote> {
 		SpringApplication.run(AnimeQuotesApplication.class, args);
 	}
 
-	@GetMapping("/hello")
-	public void hello(@RequestParam(value = "name", defaultValue = "World") String name) throws JsonProcessingException, JSONException {
+	@GetMapping("/BeInspired")
+	public String hello(@RequestParam(value = "quote", defaultValue = "Be Inspired!") String name) throws JsonProcessingException, JSONException {
 		// request url
-		String url = "https://animechanapi.xyz/api/quotes/random";
+		String url = "https://animechanapi.xyz/api/quotes?char={char}";
+
+		// Create a Scanner object
+		Scanner myObj = new Scanner(System.in);
+		System.out.println("Enter Character Name");
+
+		// Read user input
+		String characName = myObj.nextLine();
+		System.out.println(characName);  // Output user input
 
 		// create an instance of RestTemplate
 		RestTemplate restTemplate = new RestTemplate();
 
 		// make an HTTP GET request
-		String json = restTemplate.getForObject(url, String.class);
+		String json = restTemplate.getForObject(url, String.class, characName);
 
 		//Converting info from API call to JSON object and formatting.
 		JSONObject response = new JSONObject(json);
@@ -37,7 +48,7 @@ public class AnimeQuotesApplication<quote> {
 
 		System.out.println(quote);
 		System.out.println(character);
-		//return String.format("Hello %s!", name);
+		return String.format("%s: '%s'", characName, quote);
 	}
 
 }
